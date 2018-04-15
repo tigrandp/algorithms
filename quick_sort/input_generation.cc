@@ -6,9 +6,7 @@
 
 namespace {
 
-int GetRandomNumber() {
-  return std::rand() % 100;
-}
+int GetRandomNumber() { return std::rand() % 100; }
 
 }  // namespace
 

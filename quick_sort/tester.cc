@@ -19,11 +19,11 @@ double MeasureSortRunTime(
     std::vector<int>::iterator begin, std::vector<int>::iterator end,
     const std::function<void(std::vector<int>::iterator,
                              std::vector<int>::iterator)>& sort_function) {
-  //fprintf(stderr, "Before: ");
-  //for (auto it = begin; it != end; ++it) {
+  // fprintf(stderr, "Before: ");
+  // for (auto it = begin; it != end; ++it) {
   //  fprintf(stderr, "%d ", *it);
   //}
-  //fprintf(stderr, "\n");
+  // fprintf(stderr, "\n");
   std::chrono::high_resolution_clock::time_point before =
       std::chrono::high_resolution_clock::now();
   sort_function(begin, end);
@@ -38,12 +38,14 @@ double MeasureSortRunTime(
     fprintf(stderr, "\n");
   }
   assert(sorted);
-  auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  auto now =
+      std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   std::ostringstream out;
   out << now;
   fprintf(stderr, "Heartbeat %s\n", out.str().c_str());
   return std::chrono::duration_cast<std::chrono::microseconds>(after - before)
-      .count() / 1000.0;
+             .count() /
+         1000.0;
 }
 
 std::vector<std::pair<int, double>> GetSortStats(
@@ -66,7 +68,8 @@ std::vector<std::pair<int, double>> GetSortStats(
   std::srand(889);
   fprintf(stderr, "Input type: %s\n", input_type.c_str());
   std::vector<std::pair<int, double>> run_stats;
-  for (std::size_t sequence_size = 1000; sequence_size <= 100000; sequence_size += 5000) {
+  for (std::size_t sequence_size = 1000; sequence_size <= 100000;
+       sequence_size += 5000) {
     auto sequence = input_generator(sequence_size);
     double run_time =
         MeasureSortRunTime(sequence.begin(), sequence.end(), sort_function);
@@ -79,7 +82,7 @@ void DumpStatsInFile(const std::vector<std::pair<int, double>>& stats,
                      const std::string& filename) {
   std::FILE* file = std::fopen(filename.c_str(), "w");
   if (file == nullptr) {
-    fprintf(stderr, "Can not open file: %s\n", filename.c_str()); 
+    fprintf(stderr, "Can not open file: %s\n", filename.c_str());
     assert(false);
   }
   for (const auto& entry : stats) {

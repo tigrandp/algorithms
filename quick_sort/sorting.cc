@@ -8,9 +8,7 @@
 
 namespace {
 
-Iterator Advance(Iterator it, std::size_t distance) {
-  return it + distance;
-}
+Iterator Advance(Iterator it, std::size_t distance) { return it + distance; }
 
 Iterator SimplePartitionFunction(Iterator begin, Iterator end) {
   int pivot = *std::prev(end);
@@ -31,19 +29,19 @@ Iterator HoarePartitionFunction(Iterator begin, Iterator end) {
   Iterator backward = std::prev(end);
   Iterator pivot = backward;
 
-    while (backward != forward) {
-      if (*backward < *pivot) {
-        std::swap(*backward, *forward);
-        forward = std::next(forward);
-      } else {
-        backward = std::prev(backward);
-      }
-    }
+  while (backward != forward) {
     if (*backward < *pivot) {
-      backward = std::next(backward);
+      std::swap(*backward, *forward);
+      forward = std::next(forward);
+    } else {
+      backward = std::prev(backward);
     }
-      std::swap(*backward, *pivot);
-      return backward;
+  }
+  if (*backward < *pivot) {
+    backward = std::next(backward);
+  }
+  std::swap(*backward, *pivot);
+  return backward;
 }
 
 void GetRandomPivot(Iterator begin, Iterator end) {
@@ -73,7 +71,8 @@ void RecursiveQuickSort(
   RecursiveQuickSort(std::next(pivot_it), end, partition_func);
 }
 
-void TailRecursionQuickSort(Iterator begin, Iterator end,
+void TailRecursionQuickSort(
+    Iterator begin, Iterator end,
     const std::function<Iterator(Iterator, Iterator)>& partition_func) {
   while (std::distance(begin, end) > 0) {
     Iterator pivot_it = partition_func(begin, end);
@@ -87,22 +86,22 @@ std::pair<Iterator, Iterator> OptimizedPartition(Iterator begin, Iterator end) {
   Iterator backward = std::prev(end);
   Iterator pivot = backward;
 
-    while (backward != forward) {
-      if (*backward < *pivot) {
-        std::swap(*backward, *forward);
-        forward = std::next(forward);
-      } else {
-        backward = std::prev(backward);
-      }
-    }
+  while (backward != forward) {
     if (*backward < *pivot) {
-      backward = std::next(backward);
+      std::swap(*backward, *forward);
+      forward = std::next(forward);
+    } else {
+      backward = std::prev(backward);
     }
-    std::swap(*backward, *pivot);
-    Iterator left_pivot = backward;
-    Iterator rigth_pivot = backward;
+  }
+  if (*backward < *pivot) {
+    backward = std::next(backward);
+  }
+  std::swap(*backward, *pivot);
+  Iterator left_pivot = backward;
+  Iterator rigth_pivot = backward;
 
-    if (left_pivot != begin) {
+  if (left_pivot != begin) {
     backward = std::prev(left_pivot);
     while (true) {
       if (*backward == *left_pivot) {
@@ -114,20 +113,20 @@ std::pair<Iterator, Iterator> OptimizedPartition(Iterator begin, Iterator end) {
       if (backward == begin) break;
       backward = std::prev(backward);
     }
-    }
+  }
 
-    forward = std::next(rigth_pivot);
-    while (forward != end) {
-      if (*forward == *rigth_pivot) {
-        rigth_pivot = std::next(rigth_pivot);
-        if (&*forward != &*rigth_pivot) {
-          std::swap(*forward, *rigth_pivot);
-        }
+  forward = std::next(rigth_pivot);
+  while (forward != end) {
+    if (*forward == *rigth_pivot) {
+      rigth_pivot = std::next(rigth_pivot);
+      if (&*forward != &*rigth_pivot) {
+        std::swap(*forward, *rigth_pivot);
       }
-      forward = std::next(forward);
     }
+    forward = std::next(forward);
+  }
 
-    return {left_pivot, std::next(rigth_pivot)};
+  return {left_pivot, std::next(rigth_pivot)};
 }
 
 }  // namespace
