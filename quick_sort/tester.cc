@@ -19,12 +19,25 @@ double MeasureSortRunTime(
     std::vector<int>::iterator begin, std::vector<int>::iterator end,
     const std::function<void(std::vector<int>::iterator,
                              std::vector<int>::iterator)>& sort_function) {
+  //fprintf(stderr, "Before: ");
+  //for (auto it = begin; it != end; ++it) {
+  //  fprintf(stderr, "%d ", *it);
+  //}
+  //fprintf(stderr, "\n");
   std::chrono::high_resolution_clock::time_point before =
       std::chrono::high_resolution_clock::now();
   sort_function(begin, end);
   std::chrono::high_resolution_clock::time_point after =
       std::chrono::high_resolution_clock::now();
-  assert(std::is_sorted(begin, end));
+  bool sorted = std::is_sorted(begin, end);
+  if (!sorted) {
+    fprintf(stderr, "Violation: ");
+    for (auto it = begin; it != end; ++it) {
+      fprintf(stderr, "%d ", *it);
+    }
+    fprintf(stderr, "\n");
+  }
+  assert(sorted);
   auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   std::ostringstream out;
   out << now;
@@ -53,7 +66,7 @@ std::vector<std::pair<int, double>> GetSortStats(
   std::srand(889);
   fprintf(stderr, "Input type: %s\n", input_type.c_str());
   std::vector<std::pair<int, double>> run_stats;
-  for (std::size_t sequence_size = 1000; sequence_size <= 10000; sequence_size += 500) {
+  for (std::size_t sequence_size = 1000; sequence_size <= 100000; sequence_size += 5000) {
     auto sequence = input_generator(sequence_size);
     double run_time =
         MeasureSortRunTime(sequence.begin(), sequence.end(), sort_function);
@@ -81,11 +94,12 @@ void ExecuteAndRecordSortStats() {
                                                 std::vector<int>::iterator)>>>
       sorting_methods = {
           {"standard", StandardSort},
-          {"hoar_partition", HoarPartitionSort},
-          {"simple_partition", SimplePartitionSort},
-          {"care_about_indistinct", IndistinctPartitionSort},
-          {"hoar_random_partition", HoarRandomPartitionSort},
-          {"simple_random_partition", SimpleRandomPartitionSort}};
+          //{"hoar_partition", HoarPartitionSort},
+          //{"simple_partition", SimplePartitionSort},
+          //{"hoar_random_partition", HoarRandomPartitionSort},
+          //{"simple_random_partition", SimpleRandomPartitionSort},
+          //{"tail_recursion", HoareTailRecursionSort},
+          {"optimized", OptimizedQuickSort}};
   std::vector<std::string> input_types = {"random", "sorted", "reverse_sorted",
                                           "same_elements"};
 

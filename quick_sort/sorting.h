@@ -11,13 +11,15 @@ void HoarPartitionSort(Iterator begin, Iterator end);
 // Sort the given range using simple in-place partition.
 void SimplePartitionSort(Iterator begin, Iterator end);
 
-// Sort the given range using simple in-place partition, but specifically take
-// care of repeatitions.
-void IndistinctPartitionSort(Iterator begin, Iterator end);
-
 // Sort the given range using Hoar's partition with choosing random pivot.
 void HoarRandomPartitionSort(Iterator begin, Iterator end);
 
 // Sort the given range using simple in-place partition with choosing random
 // pivot.
 void SimpleRandomPartitionSort(Iterator begin, Iterator end);
+
+// Sort the given range using tail recursion optimization.
+void HoareTailRecursionSort(Iterator begin, Iterator end);
+
+// Optimized version of quicksort.
+void OptimizedQuickSort(Iterator begin, Iterator end);
