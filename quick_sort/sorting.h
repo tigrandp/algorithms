@@ -1,27 +1,23 @@
 #include <vector>
 
+using Iterator = std::vector<int>::iterator;
+
 // Sort the given range using std::sort.
-void StandardSort(std::vector<int>::iterator begin,
-                  std::vector<int>::iterator end);
+void StandardSort(Iterator begin, Iterator end);
 
 // Sort the given range using quick sort with Hoar partition.
-void HoarPartitionSort(std::vector<int>::iterator begin,
-                       std::vector<int>::iterator end);
+void HoarPartitionSort(Iterator begin, Iterator end);
 
 // Sort the given range using simple in-place partition.
-void SimplePartitionSort(std::vector<int>::iterator begin,
-                         std::vector<int>::iterator end);
+void SimplePartitionSort(Iterator begin, Iterator end);
 
 // Sort the given range using simple in-place partition, but specifically take
 // care of repeatitions.
-void IndistinctPartitionSort(std::vector<int>::iterator begin,
-                             std::vector<int>::iterator end);
+void IndistinctPartitionSort(Iterator begin, Iterator end);
 
 // Sort the given range using Hoar's partition with choosing random pivot.
-void HoarRandomPartitionSort(std::vector<int>::iterator begin,
-                             std::vector<int>::iterator end);
+void HoarRandomPartitionSort(Iterator begin, Iterator end);
 
 // Sort the given range using simple in-place partition with choosing random
 // pivot.
-void SimpleRandomPartitionSort(std::vector<int>::iterator begin,
-                               std::vector<int>::iterator end);
+void SimpleRandomPartitionSort(Iterator begin, Iterator end);

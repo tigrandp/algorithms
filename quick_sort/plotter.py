@@ -26,7 +26,7 @@ def plot_run_stats(dir_name):
     for filename in files:
         plot_file_content(filename, dir_name)
 
-    plt.ylabel('Run time in microseconds')
+    plt.ylabel('Run time in milliseconds')
     plt.xlabel('Size of sequence')
     plt.title('Runtime plt for ' + dir_name + ' input')
     plt.legend()

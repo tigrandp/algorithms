@@ -7,12 +7,7 @@
 namespace {
 
 int GetRandomNumber() {
-  static bool initialized_rand = false;
-  if (!initialized_rand) {
-    std::srand(std::time(0));
-  }
-
-  return std::rand();
+  return std::rand() % 100;
 }
 
 }  // namespace

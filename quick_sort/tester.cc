@@ -2,8 +2,11 @@
 #include <cassert>
 #include <chrono>
 #include <cstdio>
+#include <cstdlib>
+#include <ctime>
 #include <functional>
 #include <iomanip>
+#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -21,8 +24,13 @@ double MeasureSortRunTime(
   sort_function(begin, end);
   std::chrono::high_resolution_clock::time_point after =
       std::chrono::high_resolution_clock::now();
+  assert(std::is_sorted(begin, end));
+  auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  std::ostringstream out;
+  out << now;
+  fprintf(stderr, "Heartbeat %s\n", out.str().c_str());
   return std::chrono::duration_cast<std::chrono::microseconds>(after - before)
-      .count();
+      .count() / 1000.0;
 }
 
 std::vector<std::pair<int, double>> GetSortStats(
@@ -42,9 +50,10 @@ std::vector<std::pair<int, double>> GetSortStats(
     fprintf(stderr, "Unknown generator name: %s\n", input_type.c_str());
     assert(false && "Unknown generator name");
   }
+  std::srand(889);
+  fprintf(stderr, "Input type: %s\n", input_type.c_str());
   std::vector<std::pair<int, double>> run_stats;
-  for (std::size_t sequence_size = 2000; sequence_size <= 30000;
-       sequence_size += 2000) {
+  for (std::size_t sequence_size = 1000; sequence_size <= 10000; sequence_size += 500) {
     auto sequence = input_generator(sequence_size);
     double run_time =
         MeasureSortRunTime(sequence.begin(), sequence.end(), sort_function);
