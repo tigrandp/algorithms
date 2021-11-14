@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <cassert>
+#include <functional>
 #include <vector>
 #include <cstdio>
+#include <queue>
 
 class UnweightedGraph {
  public:
@@ -33,12 +35,93 @@ class UnweightedGraph {
     return traversal;
   }
 
+  std::vector<std::pair<int, int>> FindBridges() const {
+    int timer = 0;
+    std::vector<bool> used(n_, false);
+    std::vector<int> tin(n_), fup(n_);
+    std::vector<std::pair<int, int>> bridges;
+    const std::function<void(int, int)>& add_bridge = [&bridges](int u, int v) {
+      bridges.emplace_back(u, v);
+    };
+    for (int v = 0; v < n_; ++v) {
+      if (!used[v]) {
+        Dfs(v, timer, used, tin, fup, add_bridge);
+      }
+    }
+    return bridges;
+  }
+
+  // Returns the shortests path between the given nodes.
+  //
+  // Runtime complexity: O(N + M).
+  std::vector<int> ShortestPath(int source, int target) const {
+    // Distance from source.
+    std::vector<int> d(n_, -1);
+    // Parent of nodes in the shortest path.
+    std::vector<int> p(n_, -1);
+
+    std::queue<int> q;
+    q.push(source);
+    d[source] = 0;
+
+    while (!q.empty()) {
+      int u = q.front();
+      q.pop();
+
+      for (int to : adj_list_[u]) {
+        if (d[to] == -1) {
+          d[to] = d[u] + 1;
+          q.push(to);
+          p[to] = u;
+        }
+      }
+    }
+
+    // No path from source to target.
+    if (d[target] == -1) {
+      return std::vector<int>();
+    }
+
+    std::vector<int> answer;
+    while (p[target] != -1) {
+      answer.push_back(target);
+      target = p[target];
+    }
+    answer.push_back(source);
+    std::reverse(answer.begin(), answer.end());
+
+    return answer;
+  }
+
  private:
   // Potential colors during the depth first search traversal:
   //   * WHITE - the nodes hasn't been processed.
   //   * GREY - the node hasn't been fully processed, WIP.
   //   * BLACK - the node has been fully processed.
   enum DfsColors { WHITE, GREY, BLACK };
+
+  void Dfs(int v,
+           int& timer,
+           std::vector<bool>& used,
+           std::vector<int>& tin,
+           std::vector<int>& fup,
+           const std::function<void(int, int)>& bridge_func,
+           int parent = -1) const {
+    used[v] = true;
+    tin[v] = fup[v] = timer++;
+    for (int to : adj_list_[v]) {
+      if (to == parent) continue;
+      if (used[to])
+        fup[v] = std::min(fup[v], tin[to]);
+      else {
+        Dfs(to, timer, used, tin, fup, bridge_func, v);
+        fup[v] = std::min(fup[v], fup[to]);
+        if (fup[to] > tin[v]) {
+          bridge_func(v, to);
+        }
+      }
+    }
+  }
 
   bool FindCyclesInternal(std::vector<int>* traversal = nullptr) const {
     std::vector<DfsColors> nodes_colors(n_, DfsColors::WHITE);
