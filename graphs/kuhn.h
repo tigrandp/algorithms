@@ -12,7 +12,19 @@ class BipartiteGraph {
   }
 
   int MaxMatchingSize() {
+    std::vector<char> used1(n_);
+    for (int i = 0; i < n_; ++i) {
+      for (int to : graph_[i]) {
+        if (matching_[to] == -1) {
+          matching_[to] = i;
+          used1[i] = true;
+          break;
+        }
+      }
+    }
+
     for (int v = 0; v < n_; ++v) {
+      if (used1[v]) continue;
       used_.assign(n_, false);
       Kuhn(v);
     }
